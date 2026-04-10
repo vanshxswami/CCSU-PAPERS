@@ -1,705 +1,684 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>CCSU PAPERS | Previous Year Question Papers</title>
-    <!-- Google Fonts & Font Awesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- AOS Library for smooth scroll animations (lightweight) -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>CCSU PAPERS | Previous Year Exam Papers</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Firebase SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    
+    // Firebase config (using a test/demo project, replace with your own for production)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDummyKeyForDemoPurposeOnlyReplaceWithReal",
+      authDomain: "ccsu-papers-demo.firebaseapp.com",
+      projectId: "ccsu-papers-demo",
+      storageBucket: "ccsu-papers-demo.appspot.com",
+      messagingSenderId: "123456789012",
+      appId: "1:123456789012:web:abcd1234efgh5678"
+    };
+    
+    // Initialize Firebase (will fallback to localStorage if real Firebase fails)
+    let db;
+    try {
+      const app = initializeApp(firebaseConfig);
+      db = getFirestore(app);
+      console.log("Firebase initialized (demo mode)");
+    } catch(e) {
+      console.warn("Firebase config not valid, using localStorage fallback");
+      db = null;
+    }
+    
+    window.db = db;
+  </script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s;
+    }
 
-        body {
-            background: #f5f9ff;
-            color: #1e293b;
-            scroll-behavior: smooth;
-        }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
 
-        /* Modern Blue + White Theme */
-        :root {
-            --primary: #1e4a76;
-            --primary-dark: #0f3b5c;
-            --primary-light: #eef4ff;
-            --accent: #3b82f6;
-            --gray-light: #f8fafc;
-            --gray-border: #e2e8f0;
-            --shadow-sm: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.02);
-            --shadow-md: 0 20px 25px -12px rgba(0,0,0,0.08);
-        }
+    /* Light Mode (Default) */
+    :root {
+      --bg-primary: #f8fafc;
+      --bg-card: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --border: #e2e8f0;
+      --blue-primary: #2563eb;
+      --blue-dark: #1e40af;
+      --blue-light: #eff6ff;
+      --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.02);
+      --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.025);
+    }
+    body.dark {
+      --bg-primary: #0f172a;
+      --bg-card: #1e293b;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --border: #334155;
+      --blue-primary: #3b82f6;
+      --blue-dark: #60a5fa;
+      --blue-light: #1e293b;
+      --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.3);
+    }
 
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        /* Navbar */
-        .navbar {
-            background: white;
-            backdrop-filter: blur(0px);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            padding: 16px 0;
-        }
-
-        .nav-flex {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-
-        .logo h2 {
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #1e4a76, #3b82f6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -0.5px;
-        }
-
-        .logo span {
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #475569;
-            background: none;
-            -webkit-background-clip: unset;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 28px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            font-weight: 600;
-            color: #1e293b;
-            transition: 0.2s;
-        }
-
-        .nav-links a:hover, .nav-links a.active {
-            color: var(--primary);
-        }
-
-        .admin-badge {
-            background: var(--primary-light);
-            padding: 6px 14px;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--primary);
-            cursor: pointer;
-        }
-
-        /* Hero */
-        .hero {
-            padding: 70px 0 60px;
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            background: linear-gradient(to right, #0f3b5c, #2563eb);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 20px;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            color: #334155;
-            max-width: 650px;
-            margin: 0 auto 32px;
-        }
-
-        .search-bar {
-            max-width: 550px;
-            margin: 0 auto;
-            display: flex;
-            background: white;
-            border-radius: 60px;
-            border: 1px solid var(--gray-border);
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .search-bar input {
-            flex: 1;
-            padding: 14px 22px;
-            border: none;
-            outline: none;
-            font-size: 1rem;
-        }
-
-        .search-bar button {
-            background: var(--primary);
-            border: none;
-            padding: 0 28px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        /* Category Cards */
-        .section-title {
-            font-size: 1.9rem;
-            font-weight: 700;
-            margin: 40px 0 30px 0;
-            position: relative;
-            display: inline-block;
-        }
-        .section-title:after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 60px;
-            height: 4px;
-            background: var(--accent);
-            border-radius: 4px;
-        }
-
-        .categories-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 24px;
-            margin-bottom: 50px;
-        }
-
-        .cat-card {
-            background: white;
-            border-radius: 28px;
-            padding: 28px 16px;
-            text-align: center;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.25s ease;
-            border: 1px solid rgba(59,130,246,0.1);
-            cursor: pointer;
-        }
-        .cat-card i {
-            font-size: 2.6rem;
-            color: var(--primary);
-            margin-bottom: 16px;
-        }
-        .cat-card h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-        .cat-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-md);
-            border-color: var(--accent);
-        }
-
-        /* Papers Section with Filters & Cards */
-        .papers-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            margin: 20px 0 30px;
-        }
-        .filter-group select {
-            padding: 10px 20px;
-            border-radius: 40px;
-            border: 1px solid var(--gray-border);
-            background: white;
-            font-weight: 500;
-            margin-left: 12px;
-            cursor: pointer;
-        }
-        .papers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-            gap: 28px;
-            margin-bottom: 60px;
-        }
-        .paper-card {
-            background: white;
-            border-radius: 24px;
-            padding: 20px;
-            transition: all 0.2s;
-            border: 1px solid #eef2ff;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-        }
-        .paper-card:hover {
-            border-color: #b9d0f0;
-            box-shadow: 0 12px 20px -12px rgba(0,0,0,0.1);
-        }
-        .paper-title {
-            font-weight: 700;
-            font-size: 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .paper-meta {
-            margin: 12px 0;
-            color: #475569;
-            display: flex;
-            gap: 15px;
-            font-size: 0.85rem;
-        }
-        .download-btn {
-            background: var(--primary-light);
-            color: var(--primary);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.2s;
-            margin-top: 12px;
-        }
-        .download-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
-        .trend-badge {
-            background: #fef9c3;
-            color: #854d0e;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            padding: 4px 10px;
-            font-weight: 700;
-        }
-
-        /* Most Downloaded & Latest Uploads */
-        .stats-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin: 50px 0;
-        }
-        .stats-card {
-            background: white;
-            border-radius: 28px;
-            padding: 24px;
-            box-shadow: var(--shadow-sm);
-        }
-        .stats-card h3 {
-            font-size: 1.4rem;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .list-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #eef2ff;
-        }
-
-        /* Upload Section (admin only) */
-        .upload-panel {
-            background: white;
-            border-radius: 32px;
-            padding: 32px;
-            margin: 40px 0;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid #e2e8f0;
-            display: none;
-        }
-        .upload-panel.show {
-            display: block;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 20px;
-            border: 1px solid #cbd5e1;
-        }
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 40px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        /* Footer / Contact & About */
-        .footer {
-            background: #0f172a;
-            color: #cbd5e1;
-            padding: 50px 0 30px;
-            margin-top: 60px;
-        }
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-            gap: 40px;
-        }
-        .footer h4 {
-            color: white;
-            margin-bottom: 18px;
-        }
-        .footer a {
-            color: #94a3b8;
-            text-decoration: none;
-        }
-
-        @media (max-width: 780px) {
-            .nav-flex {
-                flex-direction: column;
-                gap: 15px;
-            }
-            .stats-row {
-                grid-template-columns: 1fr;
-            }
-            .hero h1 {
-                font-size: 2rem;
-            }
-        }
-    </style>
+    /* Layout */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    nav {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(4px);
+    }
+    .nav-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--blue-primary), #3b82f6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--blue-primary);
+    }
+    .theme-toggle, .auth-btn {
+      background: var(--blue-light);
+      border: none;
+      padding: 8px 14px;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 500;
+      color: var(--blue-primary);
+    }
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #2563eb10, #ffffff10);
+      padding: 60px 0 50px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+    }
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      margin: 16px 0 32px;
+    }
+    .search-box {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      background: var(--bg-card);
+      border-radius: 60px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .search-box input {
+      flex: 1;
+      padding: 16px 24px;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 1rem;
+      color: var(--text-primary);
+    }
+    .search-box button {
+      background: var(--blue-primary);
+      border: none;
+      padding: 0 28px;
+      color: white;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+    /* Category Cards */
+    .section-title {
+      font-size: 1.8rem;
+      margin: 40px 0 20px;
+      font-weight: 700;
+    }
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    .cat-card {
+      background: var(--bg-card);
+      border-radius: 24px;
+      padding: 24px 16px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .cat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+    }
+    .cat-card i {
+      font-size: 2.5rem;
+      color: var(--blue-primary);
+      margin-bottom: 12px;
+    }
+    /* Papers Grid */
+    .papers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+      margin: 20px 0;
+    }
+    .paper-card {
+      background: var(--bg-card);
+      border-radius: 20px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .paper-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+    }
+    .paper-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin: 10px 0;
+    }
+    .download-btn {
+      background: var(--blue-primary);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 500;
+      margin-top: 12px;
+      width: 100%;
+    }
+    .badge {
+      background: var(--blue-light);
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    /* Upload (Admin) Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: var(--bg-card);
+      max-width: 500px;
+      width: 90%;
+      padding: 28px;
+      border-radius: 32px;
+    }
+    .modal-content input, .modal-content select {
+      width: 100%;
+      padding: 12px;
+      margin: 12px 0;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--bg-primary);
+    }
+    .close-modal {
+      float: right;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+      margin-top: 60px;
+      color: var(--text-secondary);
+    }
+    @media (max-width: 768px) {
+      .nav-flex { flex-direction: column; gap: 12px; }
+      .hero h1 { font-size: 2rem; }
+      .section-title { font-size: 1.5rem; }
+    }
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .filter-bar select {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 40px;
+    }
+    .admin-upload-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--blue-primary);
+      color: white;
+      border: none;
+      width: 56px;
+      height: 56px;
+      border-radius: 28px;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+      z-index: 99;
+    }
+    .message {
+      padding: 12px;
+      border-radius: 12px;
+      margin: 12px 0;
+    }
+  </style>
 </head>
 <body>
 
-<nav class="navbar">
-    <div class="container nav-flex">
-        <div class="logo">
-            <h2>CCSU PAPERS <span>📚</span></h2>
-        </div>
-        <div class="nav-links">
-            <a href="#" class="active" data-page="home">Home</a>
-            <a href="#" data-page="about">About</a>
-            <a href="#" data-page="papers">Papers</a>
-            <a href="#" data-page="upload" id="uploadNavBtn">Upload</a>
-            <a href="#" data-page="contact">Contact</a>
-            <div class="admin-badge" id="adminToggleBtn"><i class="fas fa-lock"></i> Admin Mode</div>
-        </div>
+<nav>
+  <div class="container nav-flex">
+    <div class="logo"><i class="fas fa-graduation-cap"></i> CCSU PAPERS</div>
+    <div class="nav-links">
+      <a href="#" data-page="home" class="nav-link active">Home</a>
+      <a href="#" data-page="papers" class="nav-link">Papers</a>
+      <a href="#" data-page="about" class="nav-link">About</a>
+      <a href="#" data-page="contact" class="nav-link">Contact</a>
+      <button id="authModalBtn" class="auth-btn"><i class="fas fa-user"></i> Login/Signup</button>
+      <button id="darkModeToggle" class="theme-toggle"><i class="fas fa-moon"></i> Dark</button>
     </div>
+  </div>
 </nav>
 
-<main id="app-root">
-    <!-- DYNAMIC CONTENT WILL BE RENDERED HERE -->
+<main id="app">
+  <!-- dynamic content will be injected here -->
 </main>
 
-<footer class="footer" id="contactFooter">
-    <div class="container footer-grid">
-        <div>
-            <h4>CCSU PAPERS</h4>
-            <p>Previous year question papers for CCSU students. B.Sc, B.Com, B.A, Engineering.</p>
-        </div>
-        <div>
-            <h4>Quick Links</h4>
-            <p><a href="#" data-page="about">About Us</a></p>
-            <p><a href="#" data-page="papers">All Papers</a></p>
-            <p><a href="#" data-page="contact">Contact Support</a></p>
-        </div>
-        <div>
-            <h4>Contact</h4>
-            <p><i class="fas fa-envelope"></i> support@ccsupapers.com</p>
-            <p><i class="fas fa-phone-alt"></i> +91 98765 43210</p>
-        </div>
-    </div>
-    <div class="container" style="text-align:center; margin-top:40px; font-size:0.8rem;">© 2025 CCSU PAPERS - Empowering Students</div>
+<footer>
+  <div class="container">
+    <p>© 2025 CCSU PAPERS - Previous Year Exam Resources for CCSU Students</p>
+  </div>
 </footer>
 
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-    AOS.init({ duration: 600, once: true });
+<button id="adminUploadFloat" class="admin-upload-btn" title="Admin Upload"><i class="fas fa-cloud-upload-alt"></i></button>
 
-    // ----------------------- DATA MODEL (Firebase simulation) ------------------------
-    let papersDB = [
-        { id: "p1", title: "B.Sc Mathematics (2023)", subject: "B.Sc", year: "2023", downloadUrl: "#", downloads: 342, uploadedBy: "admin", dateAdded: "2025-01-15" },
-        { id: "p2", title: "B.Sc Physics (2022)", subject: "B.Sc", year: "2022", downloadUrl: "#", downloads: 278, uploadedBy: "admin", dateAdded: "2025-01-10" },
-        { id: "p3", title: "B.Com Financial Accounting (2023)", subject: "B.Com", year: "2023", downloadUrl: "#", downloads: 512, uploadedBy: "admin", dateAdded: "2025-02-01" },
-        { id: "p4", title: "B.Com Business Economics (2021)", subject: "B.Com", year: "2021", downloadUrl: "#", downloads: 190, uploadedBy: "admin", dateAdded: "2025-01-20" },
-        { id: "p5", title: "B.A History (2023)", subject: "B.A", year: "2023", downloadUrl: "#", downloads: 210, uploadedBy: "admin", dateAdded: "2025-02-10" },
-        { id: "p6", title: "B.A Political Science (2022)", subject: "B.A", year: "2022", downloadUrl: "#", downloads: 187, uploadedBy: "admin", dateAdded: "2025-01-25" },
-        { id: "p7", title: "Engineering Mathematics (2023)", subject: "Engineering", year: "2023", downloadUrl: "#", downloads: 498, uploadedBy: "admin", dateAdded: "2025-02-05" },
-        { id: "p8", title: "Engineering Mechanics (2022)", subject: "Engineering", year: "2022", downloadUrl: "#", downloads: 325, uploadedBy: "admin", dateAdded: "2025-01-18" },
-        { id: "p9", title: "B.Sc Chemistry (2023)", subject: "B.Sc", year: "2023", downloadUrl: "#", downloads: 301, uploadedBy: "admin", dateAdded: "2025-02-12" }
-    ];
+<!-- Admin Upload Modal -->
+<div id="uploadModal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal">&times;</span>
+    <h3><i class="fas fa-lock"></i> Admin Upload (Password Required)</h3>
+    <input type="password" id="adminPass" placeholder="Admin Password" autocomplete="off">
+    <input type="text" id="paperTitle" placeholder="Paper Title (e.g., B.Sc Mathematics 2023)">
+    <select id="paperCategory">
+      <option value="B.Sc">B.Sc</option>
+      <option value="B.Com">B.Com</option>
+      <option value="B.A">B.A</option>
+      <option value="Engineering">Engineering</option>
+    </select>
+    <input type="text" id="paperYear" placeholder="Year (2022, 2023...)" value="2024">
+    <input type="text" id="paperUrl" placeholder="Download Link (PDF URL)">
+    <button id="submitPaperBtn" style="background:#2563eb; color:white; padding:12px; border:none; border-radius:40px;">Upload Paper</button>
+    <div id="uploadMsg"></div>
+  </div>
+</div>
 
-    let isAdminMode = false;   // Simple admin toggle (UI only for demo, but upload section accessible only when true)
-    let currentPage = "home";
-    let currentFilterSubject = "All";
-    let searchQuery = "";
+<!-- Login/Signup Modal (Simulated demo) -->
+<div id="authModal" class="modal">
+  <div class="modal-content">
+    <span class="close-auth">&times;</span>
+    <h3><i class="fas fa-user-graduate"></i> Student Access</h3>
+    <p style="font-size:14px">Demo Mode: Click "Student Login" to continue as student</p>
+    <button id="studentLoginBtn" style="width:100%; margin:8px 0; background:var(--blue-primary); color:white; padding:12px; border-radius:40px; border:none;">🔓 Continue as Student</button>
+    <hr />
+    <input type="text" placeholder="Email (demo)" id="demoEmail">
+    <input type="password" placeholder="Password (any)" id="demoPass">
+    <button id="fakeSignupBtn" style="width:100%; margin-top:8px; background:#e2e8f0; border:none; padding:10px;">Demo Signup (Mock)</button>
+    <div id="authStatus"></div>
+  </div>
+</div>
 
-    // Helper: update download counts
-    function downloadPaper(paperId) {
-        const paper = papersDB.find(p => p.id === paperId);
-        if(paper) {
-            paper.downloads += 1;
-            alert(`Downloading: ${paper.title}\n(Simulated download - PDF would open)`);
-            render(); // re-render to update most downloaded lists
+<script type="module">
+  // ---------- DATA STORAGE (Firestore fallback to localStorage) ----------
+  let currentUser = localStorage.getItem("ccsu_user") ? { name: "Student" } : null;
+  let allPapers = [];
+
+  // Load initial mock papers
+  const defaultPapers = [
+    { id: "p1", title: "B.Sc Mathematics (2023)", category: "B.Sc", year: "2023", downloadUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", downloads: 142 },
+    { id: "p2", title: "B.Com Financial Accounting (2022)", category: "B.Com", year: "2022", downloadUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", downloads: 98 },
+    { id: "p3", title: "B.A Political Science (2023)", category: "B.A", year: "2023", downloadUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", downloads: 76 },
+    { id: "p4", title: "Engineering Mathematics II (2024)", category: "Engineering", year: "2024", downloadUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", downloads: 210 },
+    { id: "p5", title: "B.Sc Physics (2021)", category: "B.Sc", year: "2021", downloadUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", downloads: 55 },
+    { id: "p6", title: "B.Com Business Economics (2023)", category: "B.Com", year: "2023", downloadUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", downloads: 112 },
+  ];
+
+  function loadPapersFromStorage() {
+    const stored = localStorage.getItem("ccsu_papers");
+    if(stored) {
+      allPapers = JSON.parse(stored);
+    } else {
+      allPapers = defaultPapers;
+      savePapers();
+    }
+  }
+  function savePapers() {
+    localStorage.setItem("ccsu_papers", JSON.stringify(allPapers));
+  }
+  loadPapersFromStorage();
+
+  function updateDownloadCount(paperId) {
+    const idx = allPapers.findIndex(p => p.id === paperId);
+    if(idx !== -1) {
+      allPapers[idx].downloads = (allPapers[idx].downloads || 0) + 1;
+      savePapers();
+      renderCurrentPage();
+    }
+  }
+
+  function addPaper(title, category, year, url) {
+    const newPaper = {
+      id: Date.now().toString(),
+      title: title,
+      category: category,
+      year: year,
+      downloadUrl: url || "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+      downloads: 0
+    };
+    allPapers.unshift(newPaper);
+    savePapers();
+    renderCurrentPage();
+  }
+
+  // Helper: get most downloaded (top 3)
+  function getMostDownloaded() {
+    return [...allPapers].sort((a,b) => (b.downloads||0) - (a.downloads||0)).slice(0,3);
+  }
+  function getLatestUploads() {
+    return [...allPapers].slice(0,4);
+  }
+
+  // UI Rendering & Routing
+  let currentPage = "home";
+  let currentCategoryFilter = "all";
+  let searchQuery = "";
+
+  function renderHome() {
+    const most = getMostDownloaded();
+    const latest = getLatestUploads();
+    return `
+      <div class="hero">
+        <div class="container">
+          <h1>Access Previous Year Papers</h1>
+          <p>Boost your exam preparation with CCSU's largest paper bank — B.Sc, B.Com, B.A, Engineering</p>
+          <div class="search-box">
+            <input type="text" id="globalSearch" placeholder="Search by subject, course, or year..." value="${searchQuery}">
+            <button id="searchBtn"><i class="fas fa-search"></i></button>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <h2 class="section-title">📚 Explore by Category</h2>
+        <div class="categories-grid" id="categoriesGrid">
+          ${['B.Sc','B.Com','B.A','Engineering'].map(cat => `
+            <div class="cat-card" data-cat="${cat}">
+              <i class="fas fa-${cat === 'B.Sc' ? 'flask' : cat === 'B.Com' ? 'chart-line' : cat === 'B.A' ? 'book' : 'microchip'}"></i>
+              <h3>${cat}</h3>
+              <p>Previous Papers</p>
+            </div>
+          `).join('')}
+        </div>
+        
+        <h2 class="section-title">🔥 Most Downloaded Papers</h2>
+        <div class="papers-grid">
+          ${most.map(p => renderPaperCard(p)).join('')}
+        </div>
+        
+        <h2 class="section-title">🆕 Latest Uploads</h2>
+        <div class="papers-grid">
+          ${latest.map(p => renderPaperCard(p)).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderPapersPage() {
+    let filtered = allPapers;
+    if(currentCategoryFilter !== "all") {
+      filtered = filtered.filter(p => p.category === currentCategoryFilter);
+    }
+    if(searchQuery.trim() !== "") {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(p => p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || p.year.includes(q));
+    }
+    return `
+      <div class="container" style="margin-top: 40px;">
+        <h1 class="section-title">📄 All Question Papers</h1>
+        <div class="filter-bar">
+          <select id="categoryFilterSelect">
+            <option value="all" ${currentCategoryFilter==='all'?'selected':''}>All Categories</option>
+            <option value="B.Sc" ${currentCategoryFilter==='B.Sc'?'selected':''}>B.Sc</option>
+            <option value="B.Com" ${currentCategoryFilter==='B.Com'?'selected':''}>B.Com</option>
+            <option value="B.A" ${currentCategoryFilter==='B.A'?'selected':''}>B.A</option>
+            <option value="Engineering" ${currentCategoryFilter==='Engineering'?'selected':''}>Engineering</option>
+          </select>
+          <div class="search-box" style="max-width:300px;">
+            <input type="text" id="papersSearch" placeholder="Search papers..." value="${searchQuery}">
+            <button id="papersSearchBtn"><i class="fas fa-search"></i></button>
+          </div>
+        </div>
+        <div class="papers-grid" id="papersGridList">
+          ${filtered.length ? filtered.map(p => renderPaperCard(p)).join('') : '<p>No papers found. Try different keywords.</p>'}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderAbout() {
+    return `<div class="container" style="padding: 60px 0;"><h1>About CCSU PAPERS</h1><p>We provide previous year question papers for Chaudhary Charan Singh University (CCSU) affiliated colleges. Our mission is to help students excel in exams by providing easy access to past papers for B.Sc, B.Com, B.A, Engineering, and more.</p><p>📌 All papers are collected from trustworthy sources. Keep checking for latest updates!</p></div>`;
+  }
+  function renderContact() {
+    return `<div class="container" style="padding: 60px 0;"><h1>Contact Us</h1><p>📧 support@ccsupapers.com</p><p>📞 +91-12345 67890</p><p>📍 CCSU Campus, Meerut Road, Ghaziabad</p><p><i class="fab fa-instagram"></i> @ccsupapers &nbsp; <i class="fab fa-twitter"></i> @ccsupapers</p></div>`;
+  }
+
+  function renderPaperCard(paper) {
+    return `
+      <div class="paper-card">
+        <h3>${escapeHtml(paper.title)}</h3>
+        <div class="paper-meta"><span class="badge">${paper.category}</span> <span>📅 ${paper.year}</span> <span>⬇️ ${paper.downloads || 0} downloads</span></div>
+        <button class="download-btn" data-id="${paper.id}" data-url="${paper.downloadUrl}"><i class="fas fa-download"></i> Download PDF</button>
+      </div>
+    `;
+  }
+
+  function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+  function attachGlobalEvents() {
+    // Download buttons
+    document.querySelectorAll('.download-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = btn.getAttribute('data-id');
+        const url = btn.getAttribute('data-url');
+        if(url) {
+          window.open(url, '_blank');
+          updateDownloadCount(id);
         } else {
-            alert("Paper not found");
+          alert("PDF link placeholder");
         }
-    }
-
-    // Add new paper (admin only)
-    function addPaper(event) {
-        event.preventDefault();
-        if(!isAdminMode) { alert("Admin mode not active. Click 'Admin Mode' first."); return; }
-        const title = document.getElementById("paperTitle").value;
-        const subject = document.getElementById("paperSubject").value;
-        const year = document.getElementById("paperYear").value;
-        if(!title || !subject || !year) { alert("Please fill all fields"); return; }
-        const newId = "p" + Date.now();
-        const newPaper = {
-            id: newId,
-            title: title,
-            subject: subject,
-            year: year,
-            downloadUrl: "#",
-            downloads: 0,
-            uploadedBy: "admin",
-            dateAdded: new Date().toISOString().slice(0,10)
-        };
-        papersDB.unshift(newPaper);
-        document.getElementById("uploadForm").reset();
-        alert("Paper uploaded successfully!");
-        render();
-    }
-
-    // Get most downloaded (top 3)
-    function getMostDownloaded() {
-        return [...papersDB].sort((a,b) => b.downloads - a.downloads).slice(0,3);
-    }
-    // Get latest uploads (by dateAdded desc)
-    function getLatestUploads() {
-        return [...papersDB].sort((a,b) => new Date(b.dateAdded) - new Date(a.dateAdded)).slice(0,3);
-    }
-
-    // Filter papers by subject & search
-    function getFilteredPapers() {
-        let filtered = papersDB;
-        if(currentFilterSubject !== "All") {
-            filtered = filtered.filter(p => p.subject === currentFilterSubject);
+      });
+    });
+    // category cards
+    document.querySelectorAll('.cat-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const cat = card.getAttribute('data-cat');
+        if(cat) {
+          currentCategoryFilter = cat;
+          searchQuery = "";
+          currentPage = "papers";
+          renderCurrentPage();
         }
-        if(searchQuery.trim() !== "") {
-            const q = searchQuery.toLowerCase();
-            filtered = filtered.filter(p => p.title.toLowerCase().includes(q) || p.subject.toLowerCase().includes(q));
-        }
-        return filtered;
-    }
-
-    // --------------------- RENDER PAGES (SPA) -----------------------
-    function renderHome() {
-        const mostDownloaded = getMostDownloaded();
-        const latest = getLatestUploads();
-        return `
-            <div class="hero" data-aos="fade-up">
-                <div class="container">
-                    <h1>Previous Year Papers for CCSU</h1>
-                    <p>Access B.Sc, B.Com, B.A, Engineering solved & unsolved question papers. Boost your exam prep!</p>
-                    <div class="search-bar">
-                        <input type="text" id="homeSearch" placeholder="Search by subject or paper..." value="${searchQuery}">
-                        <button id="homeSearchBtn"><i class="fas fa-search"></i> Search</button>
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-                <h2 class="section-title">Explore by Category</h2>
-                <div class="categories-grid">
-                    <div class="cat-card" data-subject="B.Sc"><i class="fas fa-flask"></i><h3>B.Sc</h3></div>
-                    <div class="cat-card" data-subject="B.Com"><i class="fas fa-chart-line"></i><h3>B.Com</h3></div>
-                    <div class="cat-card" data-subject="B.A"><i class="fas fa-landmark"></i><h3>B.A</h3></div>
-                    <div class="cat-card" data-subject="Engineering"><i class="fas fa-microchip"></i><h3>Engineering</h3></div>
-                </div>
-
-                <div class="stats-row">
-                    <div class="stats-card"><h3><i class="fas fa-fire"></i> Most Downloaded</h3>
-                        ${mostDownloaded.map(p => `<div class="list-item"><span><strong>${p.title}</strong> (${p.subject})</span><span class="trend-badge">${p.downloads} downloads</span></div>`).join('')}
-                    </div>
-                    <div class="stats-card"><h3><i class="fas fa-clock"></i> Latest Uploads</h3>
-                        ${latest.map(p => `<div class="list-item"><span>📄 ${p.title}</span><span>${p.dateAdded}</span></div>`).join('')}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    function renderPapersPage() {
-        const filtered = getFilteredPapers();
-        return `
-            <div class="container">
-                <div class="papers-header">
-                    <h2 class="section-title" style="margin-top:30px">📄 All Question Papers</h2>
-                    <div class="filter-group">
-                        <label>Filter by: </label>
-                        <select id="subjectFilterSelect">
-                            <option value="All" ${currentFilterSubject === "All" ? "selected" : ""}>All Subjects</option>
-                            <option value="B.Sc" ${currentFilterSubject === "B.Sc" ? "selected" : ""}>B.Sc</option>
-                            <option value="B.Com" ${currentFilterSubject === "B.Com" ? "selected" : ""}>B.Com</option>
-                            <option value="B.A" ${currentFilterSubject === "B.A" ? "selected" : ""}>B.A</option>
-                            <option value="Engineering" ${currentFilterSubject === "Engineering" ? "selected" : ""}>Engineering</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="papers-grid">
-                    ${filtered.map(paper => `
-                        <div class="paper-card" data-aos="fade-up">
-                            <div class="paper-title">
-                                <span>${paper.title}</span>
-                                ${paper.downloads > 300 ? '<span class="trend-badge"><i class="fas fa-chart-simple"></i> Popular</span>' : ''}
-                            </div>
-                            <div class="paper-meta"><span><i class="fas fa-book"></i> ${paper.subject}</span> <span><i class="fas fa-calendar"></i> ${paper.year}</span> <span><i class="fas fa-download"></i> ${paper.downloads}</span></div>
-                            <button class="download-btn" data-id="${paper.id}"><i class="fas fa-file-pdf"></i> Download PDF</button>
-                        </div>
-                    `).join('')}
-                    ${filtered.length === 0 ? '<div style="grid-column:1/-1; text-align:center; padding:60px;">No papers match. Try different filter.</div>' : ''}
-                </div>
-            </div>
-        `;
-    }
-
-    function renderAbout() {
-        return `<div class="container" style="padding: 50px 0; max-width:800px;"><h2>📖 About CCSU PAPERS</h2><p style="margin-top:20px">CCSU PAPERS is a student-driven initiative to provide free access to previous year question papers for Chaudhary Charan Singh University (CCSU) and affiliated colleges. We cover B.Sc, B.Com, B.A, and Engineering streams. Our goal is to help students excel in exams by practicing real past papers.</p><p style="margin-top:20px">All materials are for educational purposes. Join thousands of students who download papers every day!</p></div>`;
-    }
-
-    function renderContact() {
-        return `<div class="container" style="padding: 50px 0; max-width:700px;"><h2>📞 Contact Us</h2><p style="margin-bottom:30px">Have questions or suggestions? Reach out to our team.</p>
-        <div style="background:white; border-radius:32px; padding:32px;"><i class="fas fa-envelope" style="font-size:1.5rem;"></i> <strong>Email:</strong> hello@ccsupapers.com<br><br>
-        <i class="fas fa-map-marker-alt"></i> CCSU, Meerut Road, Ghaziabad, India<br><br>
-        <i class="fab fa-whatsapp"></i> +91 98765 43210 (Mon-Fri 10AM-5PM)</div></div>`;
-    }
-
-    function renderUpload() {
-        if(!isAdminMode) {
-            return `<div class="container" style="padding: 60px; text-align:center"><i class="fas fa-shield-alt" style="font-size:3rem"></i><h3>Admin Access Required</h3><p>Please click "Admin Mode" button on navbar to enable upload section.</p></div>`;
-        }
-        return `
-            <div class="container">
-                <div class="upload-panel show" style="display:block; margin-top:40px;">
-                    <h2><i class="fas fa-cloud-upload-alt"></i> Upload New Paper (Admin)</h2>
-                    <form id="uploadForm" style="margin-top:28px;">
-                        <div class="form-group"><input type="text" id="paperTitle" placeholder="Paper Title (e.g. B.Sc Mathematics 2023)" required></div>
-                        <div class="form-group">
-                            <select id="paperSubject" required><option value="">Select Subject</option><option>B.Sc</option><option>B.Com</option><option>B.A</option><option>Engineering</option></select>
-                        </div>
-                        <div class="form-group"><input type="text" id="paperYear" placeholder="Year (2023, 2022...)" required></div>
-                        <button type="submit" class="btn-primary"><i class="fas fa-upload"></i> Upload Paper</button>
-                    </form>
-                </div>
-            </div>
-        `;
-    }
-
-    function renderCurrentPage() {
-        const mainDiv = document.getElementById("app-root");
-        if(currentPage === "home") mainDiv.innerHTML = renderHome();
-        else if(currentPage === "about") mainDiv.innerHTML = renderAbout();
-        else if(currentPage === "papers") mainDiv.innerHTML = renderPapersPage();
-        else if(currentPage === "upload") mainDiv.innerHTML = renderUpload();
-        else if(currentPage === "contact") mainDiv.innerHTML = renderContact();
-        else mainDiv.innerHTML = renderHome();
-
-        // Attach dynamic listeners after DOM update
-        attachEventListeners();
-    }
-
-    function attachEventListeners() {
-        // Category card listeners
-        document.querySelectorAll('.cat-card').forEach(card => {
-            card.addEventListener('click', (e) => {
-                const subject = card.getAttribute('data-subject');
-                if(subject) {
-                    currentFilterSubject = subject;
-                    currentPage = "papers";
-                    updateNavActive("papers");
-                    renderCurrentPage();
-                }
-            });
-        });
-        // Home search
-        const homeSearchBtn = document.getElementById("homeSearchBtn");
-        if(homeSearchBtn) {
-            homeSearchBtn.addEventListener('click', () => {
-                const inp = document.getElementById("homeSearch");
-                searchQuery = inp.value;
-                currentPage = "papers";
-                updateNavActive("papers");
-                renderCurrentPage();
-            });
-        }
-        // Filter select on papers page
-        const filterSelect = document.getElementById("subjectFilterSelect");
-        if(filterSelect) {
-            filterSelect.addEventListener('change', (e) => {
-                currentFilterSubject = e.target.value;
-                renderCurrentPage();
-            });
-        }
-        // Download buttons
-        document.querySelectorAll('.download-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = btn.getAttribute('data-id');
-                if(id) downloadPaper(id);
-            });
-        });
-        // Upload form submission
-        const form = document.getElementById("uploadForm");
-        if(form) form.addEventListener('submit', addPaper);
-    }
-
-    function updateNavActive(page) {
-        currentPage = page;
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.classList.remove('active');
-            if(link.getAttribute('data-page') === page) link.classList.add('active');
-        });
+      });
+    });
+    const searchInput = document.getElementById('globalSearch');
+    const searchBtn = document.getElementById('searchBtn');
+    if(searchBtn && searchInput) {
+      searchBtn.onclick = () => {
+        searchQuery = searchInput.value;
+        currentCategoryFilter = "all";
+        currentPage = "papers";
         renderCurrentPage();
+      };
     }
+    const papersSearch = document.getElementById('papersSearch');
+    const papersSearchBtn = document.getElementById('papersSearchBtn');
+    if(papersSearchBtn && papersSearch) {
+      papersSearchBtn.onclick = () => {
+        searchQuery = papersSearch.value;
+        renderCurrentPage();
+      };
+    }
+    const filterSelect = document.getElementById('categoryFilterSelect');
+    if(filterSelect) {
+      filterSelect.onchange = (e) => {
+        currentCategoryFilter = e.target.value;
+        renderCurrentPage();
+      };
+    }
+  }
 
-    // Navigation & admin mode logic
-    document.querySelectorAll('.nav-links a').forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const page = link.getAttribute('data-page');
-            if(page === "upload" && !isAdminMode) {
-                alert("Admin mode is OFF. Click 'Admin Mode' button to enable upload feature.");
-                return;
-            }
-            updateNavActive(page);
-        });
+  function renderCurrentPage() {
+    let html = "";
+    if(currentPage === "home") html = renderHome();
+    else if(currentPage === "papers") html = renderPapersPage();
+    else if(currentPage === "about") html = renderAbout();
+    else if(currentPage === "contact") html = renderContact();
+    document.getElementById("app").innerHTML = html;
+    attachGlobalEvents();
+    if(currentPage === "papers") {
+      const filterSelect = document.getElementById('categoryFilterSelect');
+      if(filterSelect) filterSelect.value = currentCategoryFilter;
+      const papersSearchField = document.getElementById('papersSearch');
+      if(papersSearchField) papersSearchField.value = searchQuery;
+    }
+  }
+
+  // Navigation
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const page = link.getAttribute('data-page');
+      if(page === "home") { currentPage = "home"; currentCategoryFilter = "all"; searchQuery = ""; }
+      else if(page === "papers") { currentPage = "papers"; }
+      else if(page === "about") { currentPage = "about"; }
+      else if(page === "contact") { currentPage = "contact"; }
+      renderCurrentPage();
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
     });
-    document.getElementById("adminToggleBtn").addEventListener('click', () => {
-        isAdminMode = !isAdminMode;
-        alert(isAdminMode ? "Admin Mode Activated! You can now upload papers." : "Admin Mode Deactivated.");
-        if(currentPage === "upload") renderCurrentPage();
-        else if(currentPage === "upload") renderCurrentPage();
-        else renderCurrentPage();
-    });
-    // Footer links
-    document.querySelectorAll('.footer a').forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const page = link.getAttribute('data-page');
-            if(page) updateNavActive(page);
-        });
-    });
-    // initial load home
-    updateNavActive("home");
+  });
+
+  // Dark mode
+  const toggleBtn = document.getElementById('darkModeToggle');
+  toggleBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+  });
+  if(localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
+
+  // Admin upload modal
+  const modal = document.getElementById('uploadModal');
+  const adminFloat = document.getElementById('adminUploadFloat');
+  const closeModal = document.querySelector('.close-modal');
+  adminFloat.onclick = () => modal.style.display = 'flex';
+  closeModal.onclick = () => modal.style.display = 'none';
+  window.onclick = (e) => { if(e.target === modal) modal.style.display = 'none'; };
+  document.getElementById('submitPaperBtn').onclick = () => {
+    const pass = document.getElementById('adminPass').value;
+    if(pass !== "admin123") {
+      document.getElementById('uploadMsg').innerHTML = '<div class="message" style="background:#fee2e2;">❌ Wrong admin password</div>';
+      return;
+    }
+    const title = document.getElementById('paperTitle').value.trim();
+    const cat = document.getElementById('paperCategory').value;
+    const year = document.getElementById('paperYear').value.trim();
+    const url = document.getElementById('paperUrl').value.trim();
+    if(!title) { alert("Title required"); return; }
+    addPaper(title, cat, year, url);
+    document.getElementById('uploadMsg').innerHTML = '<div class="message" style="background:#dcfce7;">✅ Paper uploaded!</div>';
+    setTimeout(() => { modal.style.display = 'none'; document.getElementById('uploadMsg').innerHTML = ''; }, 1200);
+    document.getElementById('paperTitle').value = '';
+    document.getElementById('adminPass').value = '';
+  };
+
+  // Auth Modal (Student demo)
+  const authModal = document.getElementById('authModal');
+  const authBtn = document.getElementById('authModalBtn');
+  const closeAuth = document.querySelector('.close-auth');
+  authBtn.onclick = () => authModal.style.display = 'flex';
+  closeAuth.onclick = () => authModal.style.display = 'none';
+  document.getElementById('studentLoginBtn').onclick = () => {
+    currentUser = { name: "Student" };
+    localStorage.setItem("ccsu_user", "demo");
+    authModal.style.display = 'none';
+    alert("Logged in as Student! (Demo)");
+  };
+  document.getElementById('fakeSignupBtn').onclick = () => {
+    alert("Demo signup successful! You can now browse papers.");
+    currentUser = { name: "User" };
+    localStorage.setItem("ccsu_user", "demo");
+    authModal.style.display = 'none';
+  };
+
+  renderCurrentPage();
+  // Admin extra dashboard: simple welcome console
+  console.log("CCSU PAPERS ready | Admin pass: admin123");
 </script>
 </body>
 </html>
